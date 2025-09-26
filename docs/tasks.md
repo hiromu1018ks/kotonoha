@@ -11,19 +11,19 @@
 ### 1.1 Next.js プロジェクト初期化
 
 - [x] `pnpm create next-app kotonoha --ts --tailwind --eslint`
-- [ ] プロジェクト構造調整
-- [ ] Git 初期化と初回コミット
+- [x] プロジェクト構造調整
+- [x] Git 初期化と初回コミット
 
 ### 1.2 依存関係
 
-- [ ] **必須パッケージ**
+- [x] **必須パッケージ**
   - `@google/genai`（Gemini API SDK）
   - `dompurify` + `@types/dompurify`（XSS 対策）
   - `zustand`（状態管理）
   - `framer-motion`（アニメーション）
   - `lucide-react`（アイコン）
 
-- [ ] **開発用パッケージ**
+- [x] **開発用パッケージ**
   - `@testing-library/react` + `@testing-library/jest-dom`
   - `@playwright/test`（E2E）
   - `msw`（API モック）
