@@ -6,6 +6,7 @@
 既存の HTML/CSS/JS ベースの UI を React コンポーネント化し、Gemini API による実際の校正機能を実装する。
 
 **重要な設計方針**:
+
 - 既存 UI の DOM 構造（`inputText`, `resultArea`, `correctBtn` 等）を可能な限り維持
 - セキュリティ重視：DOMPurify でサニタイズ、API キーはサーバーのみ
 - レスポンシブ：デスクトップ 3 カラム、モバイル縦並び
@@ -42,7 +43,8 @@
 
 ### 1.4 環境設定
 
-- [ ] **`.env.local` 作成**
+- [x] **`.env.local` 作成**
+
   ```bash
   GEMINI_API_KEY=your_api_key_here
   GEMINI_MODEL=gemini-2.5-flash
@@ -50,7 +52,8 @@
   TIMEOUT_MS=10000
   ```
 
-- [ ] **`.env.example` 作成**（API キーなし版）
+- [x] **`.env.example` 作成**（API キーなし版）
+
   ```bash
   GEMINI_API_KEY=
   GEMINI_MODEL=gemini-2.5-flash
@@ -58,7 +61,7 @@
   TIMEOUT_MS=10000
   ```
 
-- [ ] **`.gitignore` 確認**（.env.local が除外されていることを確認）
+- [x] **`.gitignore` 確認**（.env.local が除外されていることを確認）
 
 ---
 
@@ -66,20 +69,20 @@
 
 ### 2.1 レイアウト・基盤コンポーネント
 
-- [ ] **`app/layout.tsx` 設定**
+- [x] **`app/layout.tsx` 設定**
   - メタデータ設定（title, description, viewport）
   - Tailwind CSS とフォント（Inter/Noto Sans JP）読み込み
   - CSP ヘッダー設定: `script-src 'self'; object-src 'none'`
   - `<html lang="ja">` で日本語対応
 
-- [ ] **`app/globals.css` 追加設定**
+- [x] **`app/globals.css` 追加設定**
   - CSS カスタムプロパティでテーマカラー定義
   - フォーカスリング、スクロールバースタイル
   - アニメーション用の @keyframes（fade-in, slide-up）
 
 ### 2.2 ヘッダーコンポーネント
 
-- [ ] **`components/Header.tsx` 実装**
+- [x] **`components/Header.tsx` 実装**
   - ロゴ（Lucide の FileText アイコン）+ "Kotonoha" タイトル
   - 設定ボタン（Settings アイコン）→ SettingsModal 開く
   - レスポンシブ：モバイルで適切な padding/margin
@@ -87,7 +90,7 @@
 
 ### 2.3 メインページ
 
-- [ ] **`app/page.tsx` 作成**
+- [x] **`app/page.tsx` 作成**
   - **デスクトップ**: 3カラムレイアウト（EditorPanel | ControlPanel | ResultPanel）
   - **モバイル**: 縦並び（Editor → Control → Result）
   - CSS Grid または Flexbox でレスポンシブ
@@ -168,6 +171,7 @@
 
 - [ ] **`lib/prompts.ts` 作成**
   - **基本プロンプトテンプレート**:
+
     ```
     あなたは日本語の校正・校閲の専門家です。以下の文章を{style}文書として適切に校正してください。
 
@@ -186,6 +190,7 @@
     対象文章:
     {text}
     ```
+
   - **プロンプト組み立て関数**: 文体・レベルに応じた動的生成
   - **文体別の追加指示**: ビジネス（敬語重視）、カジュアル（親しみやすさ）、学術（正確性）
 
@@ -244,6 +249,7 @@
 ### 4.3 CSP（Content Security Policy）設定
 
 - [ ] **`app/layout.tsx` での CSP 設定**
+
   ```typescript
   const cspHeader = `
     default-src 'self';
@@ -258,6 +264,7 @@
     upgrade-insecure-requests;
   `;
   ```
+
   - **本番環境**: `'unsafe-inline'` 除去、nonce 利用検討
 
 ### 4.4 入力値検証・サニタイゼーション
