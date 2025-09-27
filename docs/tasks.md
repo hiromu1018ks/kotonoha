@@ -118,7 +118,7 @@
 
 ### 2.6 結果パネル
 
-- [ ] **`components/ResultPanel.tsx` 実装**
+- [x] **`components/ResultPanel.tsx` 実装**
   - **校正結果テキスト**: `id="resultArea"`、DOMPurify でサニタイズ済み
   - **概要表示**: 修正概要（1-2行）
   - **文字数カウンター**: 校正後文字数

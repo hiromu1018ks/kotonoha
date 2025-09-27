@@ -74,6 +74,20 @@ export default function Home() {
     }
   };
 
+  const handleCopy = () => {
+    if (!proofreadResult) return;
+
+    navigator.clipboard
+      .writeText(proofreadResult)
+      .then(() => {
+        console.log("校正結果をクリップボードにコピーしました");
+      })
+      .catch((err) => {
+        console.error("コピーに失敗しました:", err);
+        setErrorMessage("クリップボードへのコピーに失敗しました");
+      });
+  };
+
   return (
     <>
       <Header onOpenSettings={onOpenSettings} />
@@ -105,6 +119,7 @@ export default function Home() {
             summary={proofreadSummary}
             charCount={resultCharCount}
             onShowDetails={handleShowDetails}
+            onCopy={handleCopy}
             className="lg:col-span-2"
           />
         </div>
