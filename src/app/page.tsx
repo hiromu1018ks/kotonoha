@@ -23,6 +23,9 @@ export default function Home() {
   const [proofreadResult, setProofreadResult] = useState("");
   const [proofreadSummary, setProofreadSummary] = useState("");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [abortController, setAbortController] =
+    useState<AbortController | null>(null);
 
   const maxChars = 10000;
 
@@ -38,8 +41,20 @@ export default function Home() {
 
   const handleCorrect = () => {
     if (validationState !== "ok") return;
+
+    setErrorMessage("");
+
+    const controller = new AbortController();
+    setAbortController(controller);
+    setLoading(true);
     // TODO: 後ほど実装。
-    setProofreadResult(inputText); // 現時点では入力された情報をそのままResultPanelに表示。
+    setTimeout(() => {
+      if (!controller.signal.aborted) {
+        setProofreadResult(inputText);
+        setLoading(false);
+        setAbortController(null);
+      }
+    }, 3000); // 現時点では入力された情報をそのままResultPanelに表示。
   };
 
   const handleApply = () => {
@@ -48,6 +63,15 @@ export default function Home() {
 
   const handleShowDetails = () => {
     // TODO 後ほど実装
+  };
+
+  const handleCancel = () => {
+    if (abortController) {
+      abortController.abort();
+      setLoading(false);
+      setAbortController(null);
+      setErrorMessage("校正がキャンセルされました");
+    }
   };
 
   return (
@@ -68,8 +92,12 @@ export default function Home() {
           <ControlPanel
             loading={loading}
             hasResult={hasResult}
+            canCorrect={validationState === "ok"}
+            errorMessage={errorMessage}
+            isCancelable={!!abortController}
             onCorrect={handleCorrect}
             onApply={handleApply}
+            onCancel={handleCancel}
             className="lg:col-span-1 lg:self-stretch"
           />
           <ResultPanel
