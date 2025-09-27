@@ -99,7 +99,7 @@
 
 ### 2.4 エディターパネル
 
-- [ ] **`components/EditorPanel.tsx` 実装**
+- [x] **`components/EditorPanel.tsx` 実装**
   - **Textarea**: `id="inputText"` 属性（既存DOM互換）
   - **文字数カウンター**: リアルタイム表示、制限（10,000文字）超過時に警告色
   - **ショートカット**: `Ctrl+Enter` / `Cmd+Enter` で校正実行
@@ -109,7 +109,7 @@
 
 ### 2.5 コントロールパネル
 
-- [ ] **`components/ControlPanel.tsx` 実装**
+- [x] **`components/ControlPanel.tsx` 実装**
   - **校正実行ボタン**: `id="correctBtn"`、disabled 状態制御
   - **適用ボタン**: 校正結果をエディターに反映、結果がない場合 disabled
   - **ローディング状態**: Framer Motion のスピナーアニメーション
