@@ -2,17 +2,20 @@
 @import "tw-animate-css";
 
 :root {
-  --color-background: #0f172a;
-  --color-surface: #111827;
-  --color-primary: #38bdf8;
-  --color-primary-foreground: #0b1120;
-  --color-border: rgba(148, 163, 184, 0.2);
-  --color-focus: rgba(56, 189, 248, 0.6);
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-secondary-surface: #f1f5f9;
+  --color-primary: #4f46e5;
+  --color-primary-accent: #ec4899;
+  --color-primary-foreground: #ffffff;
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-muted: #64748b;
+  --color-focus: rgba(59, 130, 246, 0.45);
 }
 
 body {
   background: var(--color-background);
-  color: #e2e8f0;
+  color: #1f2937;
   font-family:
     var(--font-noto-sans-jp),
     var(--font-inter),
@@ -21,6 +24,11 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background-color: rgba(79, 70, 229, 0.16);
 }
 
 :focus-visible {
@@ -33,40 +41,56 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.9);
+  background: var(--color-secondary-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.4);
+  background: rgba(79, 70, 229, 0.35);
   border-radius: 999px;
+  border: 2px solid var(--color-secondary-surface);
+}
+
+.highlight {
+  background: linear-gradient(120deg, #dbeafe 0%, #fef3c7 100%);
+  border-bottom: 2px solid #3b82f6;
+  border-radius: 3px;
+  padding: 1px 2px;
+  transition: all 0.2s ease;
+}
+
+.highlight:hover {
+  background: linear-gradient(120deg, #bfdbfe 0%, #fde68a 100%);
+  transform: translateY(-1px);
 }
 
 @keyframes fade-in {
   from {
     opacity: 0;
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @keyframes slide-up {
   from {
-    transform: translateY(12px);
     opacity: 0;
+    transform: translateY(12px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @layer utilities {
   .animate-fade-in {
-    animation: fade-in 200ms ease-out forwards;
+    animation: fade-in 220ms ease-out forwards;
   }
 
   .animate-slide-up {
-    animation: slide-up 250ms ease-out forwards;
+    animation: slide-up 260ms ease-out forwards;
   }
 }
