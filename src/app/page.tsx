@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useSettingsStore } from "@/lib/settings/store.ts";
 import ControlPanel from "./components/ControlPanel.tsx";
 import EditorPanel from "./components/EditorPanel.tsx";
 import Header from "./components/Header.tsx";
 import ResultPanel from "./components/ResultPanel.tsx";
+import SettingsModal from "./components/SettingsModal.tsx";
 
 const deriveValidation = (
   text: string,
@@ -41,6 +43,12 @@ export default function Home() {
 
   const handleCorrect = () => {
     if (validationState !== "ok") return;
+
+    // 設定値を取得
+    const settings = useSettingsStore.getState();
+
+    // TODO: API呼び出し時に settings.style, settings.level, settings.customPrompt を使用
+    console.log("現在の設定:", settings);
 
     setErrorMessage("");
 
@@ -124,6 +132,7 @@ export default function Home() {
           />
         </div>
       </main>
+      <SettingsModal open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
     </>
   );
 }

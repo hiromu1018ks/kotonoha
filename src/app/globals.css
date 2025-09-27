@@ -11,6 +11,28 @@
   --color-border: rgba(15, 23, 42, 0.08);
   --color-muted: #64748b;
   --color-focus: rgba(59, 130, 246, 0.45);
+
+  /* shadcn/ui 用変数を追加（既存の値を再利用） */
+  --background: 210 40% 98%; /* 薄いグレー（#f8fafc相当） */
+  --foreground: 215 25% 27%; /* ダークグレー（#1f2937相当） */
+  --card: 0 0% 100%; /* 純白（#ffffff） */
+  --card-foreground: 215 25% 27%; /* ダークグレー */
+  --popover: 0 0% 100%; /* 純白 */
+  --popover-foreground: 215 25% 27%; /* ダークグレー */
+  --primary: 243 75% 59%; /* インディゴ（#4f46e5相当） */
+  --primary-foreground: 0 0% 100%; /* 純白 */
+  --secondary: 214 32% 91%; /* 薄いグレー（#f1f5f9相当） */
+  --secondary-foreground: 215 25% 27%; /* ダークグレー */
+  --muted: 214 32% 91%; /* 薄いグレー */
+  --muted-foreground: 215 16% 47%; /* ミディアムグレー（#64748b相当） */
+  --accent: 214 32% 91%; /* 薄いグレー */
+  --accent-foreground: 215 25% 27%; /* ダークグレー */
+  --destructive: 0 84% 60%; /* 赤色 */
+  --destructive-foreground: 0 0% 100%; /* 純白 */
+  --border: 214 32% 91%; /* 薄いグレー */
+  --input: 214 32% 91%; /* 薄いグレー */
+  --ring: 243 75% 59%; /* インディゴ */
+  --radius: 0.5rem; /* 既存の設計に合わせる */
 }
 
 body {

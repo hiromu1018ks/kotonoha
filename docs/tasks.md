@@ -128,7 +128,7 @@
 
 ### 2.7 設定モーダル
 
-- [ ] **`components/SettingsModal.tsx` 実装**
+- [x] **`components/SettingsModal.tsx` 実装**
   - **文体選択**: Select コンポーネント（business, casual, academic, report）
   - **校正レベル**: ラジオボタン（basic, standard, advanced）
   - **プロンプトカスタマイズ**: Textarea（上級者向け、デフォルトは非表示）
