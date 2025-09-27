@@ -6,6 +6,7 @@ interface ResultPanelProps {
   charCount: number;
   onShowDetails?: () => void;
   onCopy?: () => void;
+  className?: string;
 }
 
 export default function ResultPanel({
@@ -14,9 +15,12 @@ export default function ResultPanel({
   charCount,
   onShowDetails,
   // onCopy,
+  className = "",
 }: ResultPanelProps) {
   return (
-    <div className="col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
+    <div
+      className={`bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col ${className}`}
+    >
       <div className="p-4 border-b border-gray-200 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>

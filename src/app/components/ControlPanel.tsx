@@ -3,6 +3,7 @@ interface ControlPanelProps {
   hasResult: boolean;
   onCorrect: () => void;
   onApply: () => void;
+  className?: string;
 }
 
 export default function ControlPanel({
@@ -10,9 +11,12 @@ export default function ControlPanel({
   hasResult,
   onCorrect,
   onApply,
+  className = "",
 }: ControlPanelProps) {
   return (
-    <div className="col-span-1 flex flex-col items-center justify-center space-y-4">
+    <div
+      className={`flex flex-col items-center justify-center space-y-4 ${className}`}
+    >
       <button
         id="correctBtn"
         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
