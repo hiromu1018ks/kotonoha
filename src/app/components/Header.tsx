@@ -2,11 +2,11 @@
 
 import { FileText, Settings } from "lucide-react";
 
-const onOpenSettings = () => {
-  alert("モーダルが開く");
-};
+interface HeaderProps {
+  onOpenSettings: () => void;
+}
 
-export default function Header() {
+export default function Header({ onOpenSettings }: HeaderProps) {
   return (
     <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-40">
       <div className="container mx-auto px-4 py-4">
