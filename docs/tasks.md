@@ -151,7 +151,7 @@
 
 ### 3.1 API Route 基盤
 
-- [ ] **`app/api/proofread/route.ts` 作成**
+- [x] **`app/api/proofread/route.ts` 作成**
   - **POST ハンドラー**: リクエスト検証 → Gemini API 呼び出し → レスポンス正規化
   - **リクエスト検証**:
     - `text` 必須、string 型、1-10000 文字
@@ -161,7 +161,7 @@
 
 ### 3.2 Gemini API 連携
 
-- [ ] **`lib/gemini.ts` 作成**
+- [x] **`lib/gemini.ts` 作成**
   - **GoogleGenerativeAI インスタンス**: 環境変数 `GEMINI_API_KEY` から初期化
   - **モデル設定**: `GEMINI_MODEL` 環境変数（デフォルト: gemini-2.5-flash）
   - **タイムアウト設定**: `AbortController` で 10 秒制限
@@ -169,7 +169,7 @@
 
 ### 3.3 プロンプト設計・生成
 
-- [ ] **`lib/prompts.ts` 作成**
+- [x] **`lib/prompts.ts` 作成**
   - **基本プロンプトテンプレート**:
 
     ```
