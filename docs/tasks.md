@@ -138,7 +138,7 @@
 
 ### 2.8 詳細理由モーダル
 
-- [ ] **`components/ReasonModal.tsx` 実装**
+- [x] **`components/ReasonModal.tsx` 実装**
   - **詳細理由表示**: DOMPurify でサニタイズ済み、`dangerouslySetInnerHTML` 禁止
   - **セクション分け**: 修正内容、改善点、注意点
   - **スクロール対応**: 長文の場合のスクロール

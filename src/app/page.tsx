@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { parseProofreadDetails } from "@/lib/format/proofread.ts";
 import { useSettingsStore } from "@/lib/settings/store.ts";
+import type { ProofreadDetails } from "@/types/proofread.ts";
 import ControlPanel from "./components/ControlPanel.tsx";
 import EditorPanel from "./components/EditorPanel.tsx";
 import Header from "./components/Header.tsx";
+import ReasonModal from "./components/ReasonModal.tsx";
 import ResultPanel from "./components/ResultPanel.tsx";
 import SettingsModal from "./components/SettingsModal.tsx";
 
@@ -28,6 +31,9 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [abortController, setAbortController] =
     useState<AbortController | null>(null);
+  const [proofreadDetails, setProofreadDetails] =
+    useState<ProofreadDetails | null>(null);
+  const [isReasonOpen, setIsReasonOpen] = useState(false);
 
   const maxChars = 10000;
 
@@ -59,6 +65,9 @@ export default function Home() {
     setTimeout(() => {
       if (!controller.signal.aborted) {
         setProofreadResult(inputText);
+        setProofreadSummary(
+          "テスト用の校正概要：文章構造を改善し、より自然な表現に修正しました。"
+        );
         setLoading(false);
         setAbortController(null);
       }
@@ -70,7 +79,29 @@ export default function Home() {
   };
 
   const handleShowDetails = () => {
+    // パース関数のテストを兼ねて、実際にパースを実行
+    const rawDetails = `
+  修正内容:
+  助詞「は」を「が」に修正しました。
+  文末の敬語表現を統一しました。
+
+  改善点:
+  より自然な日本語表現に変更しました。
+  読みやすさを向上させるため、文章構造を調整しました。
+
+  注意点:
+  ビジネス文書として適切な敬語レベルを維持してください。
+  専門用語の使用は読者層を考慮してください。
+    `;
+
+    const parsedDetails = parseProofreadDetails(rawDetails);
+    setProofreadDetails(parsedDetails);
+    setIsReasonOpen(true);
     // TODO 後ほど実装
+  };
+
+  const handleCloseReason = () => {
+    setIsReasonOpen(false);
   };
 
   const handleCancel = () => {
@@ -131,6 +162,11 @@ export default function Home() {
             className="lg:col-span-2"
           />
         </div>
+        <ReasonModal
+          isOpen={isReasonOpen}
+          onClose={handleCloseReason}
+          details={proofreadDetails}
+        />
       </main>
       <SettingsModal open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
     </>
