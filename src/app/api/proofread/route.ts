@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { generateProofread } from "@/lib/gemini.ts";
 import { proofreadRequestSchema } from "@/lib/validation/proofread.ts";
 
 export async function POST(req: Request) {
@@ -18,21 +19,18 @@ export async function POST(req: Request) {
     }
 
     const { text, style, level } = parsed.data;
-    // TODO: ここで Gemini API を呼び出し、レスポンスを正規化する
+    const result = await generateProofread({ text, style, level });
 
-    // 現時点では仮のレスポンスを返す（フロントエンドの動作確認用）
-    return NextResponse.json({
-      correctedText: text,
-      summary: `スタイル:${style} / レベル:${level}（ダミー応答）`,
-      details: "Gemini API 接続前の仮データです。",
-    });
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Proofread API error:", error);
 
-    return NextResponse.json(
-      { error: "サーバー側で問題が発生しました。" },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error
+        ? error.message
+        : "サーバー側で問題が発生しました。";
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

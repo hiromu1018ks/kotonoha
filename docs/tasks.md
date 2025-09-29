@@ -196,7 +196,7 @@
 
 ### 3.4 レスポンス処理・正規化
 
-- [ ] **`lib/response-normalizer.ts` 作成**
+- [x] **`lib/response-normalizer.ts` 作成**
   - **JSON パース処理**: Gemini レスポンスの JSON 抽出・パース
   - **フォールバック処理**: JSON 形式でない場合のプレーンテキスト格納
   - **必須フィールド検証**: `correctedText`, `summary`, `details` の存在確認

@@ -1,4 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
+import {
+  type BuildPromptOptions,
+  buildProofreadPrompt,
+} from "@/lib/prompts.ts";
+import { normalizeProofreadResponse } from "@/lib/response-normalizer.ts";
 
 const MODEL_ID = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
 
@@ -20,24 +25,40 @@ function getClient() {
   return client;
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function generateProofreadResponse(prompt: string) {
+export async function generateProofread(options: BuildPromptOptions) {
   const ai = getClient();
+  const prompt = buildProofreadPrompt(options);
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
+  const response = await withTimeout(
+    ai.models.generateContent({
+      model: MODEL_ID,
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    }),
+    10_000
+  );
+
+  return normalizeProofreadResponse(response);
+}
+
+async function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number
+): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  const wrapped = new Promise<T>((resolve, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error("Gemini API の応答がタイムアウトしました。"));
+    }, timeoutMs);
+
+    promise.then(resolve).catch(reject);
+  });
 
   try {
-    // TODO: prompt を Gemini 用の contents に組み立て、実際に呼び出す
-    //  const response = await ai.models.generateContent({
-    //   model:MODEL_ID,
-    //   contents:prompt,
-    //   signal:controller.signal
-    //  })
-    //  return response
-
-    return { dummy: true }; // 今はダミーを返す
+    return await wrapped; // Promise が完了するのを待つ
   } finally {
-    clearTimeout(timeout);
+    if (timeoutId) {
+      clearTimeout(timeoutId); // 成功でも失敗でもタイマーをきちんと解除する
+    }
   }
 }
