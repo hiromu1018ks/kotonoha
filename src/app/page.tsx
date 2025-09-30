@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { parseProofreadDetails } from "@/lib/format/proofread.ts";
 import { useSettingsStore } from "@/lib/settings/store.ts";
+import { proofreadResponseSchema } from "@/lib/validation/proofread.ts";
 import type { ProofreadDetails } from "@/types/proofread.ts";
 import ControlPanel from "./components/ControlPanel.tsx";
 import EditorPanel from "./components/EditorPanel.tsx";
@@ -47,31 +48,67 @@ export default function Home() {
     setIsSettingsOpen(true);
   };
 
-  const handleCorrect = () => {
+  const handleCorrect = async () => {
     if (validationState !== "ok") return;
 
-    // 設定値を取得
-    const settings = useSettingsStore.getState();
-
-    // TODO: API呼び出し時に settings.style, settings.level, settings.customPrompt を使用
-    console.log("現在の設定:", settings);
-
     setErrorMessage("");
+    setProofreadResult("");
+    setProofreadSummary("");
+    setProofreadDetails(null);
 
     const controller = new AbortController();
     setAbortController(controller);
     setLoading(true);
-    // TODO: 後ほど実装。
-    setTimeout(() => {
-      if (!controller.signal.aborted) {
-        setProofreadResult(inputText);
-        setProofreadSummary(
-          "テスト用の校正概要：文章構造を改善し、より自然な表現に修正しました。"
-        );
-        setLoading(false);
-        setAbortController(null);
+
+    try {
+      // 設定値を取得
+      const settings = useSettingsStore.getState();
+
+      const response = await fetch("/api/proofread", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: inputText,
+          style: settings.style,
+          level: settings.level,
+        }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const error = (await response.json()) as { error?: string };
+        throw new Error(error.error || "校正に失敗しました");
       }
-    }, 3000); // 現時点では入力された情報をそのままResultPanelに表示。
+
+      const json: unknown = await response.json();
+
+      const validated = proofreadResponseSchema.safeParse(json);
+
+      if (!validated.success) {
+        throw new Error("APIレスポンスの形式が不正です");
+      }
+
+      const data = validated.data;
+
+      setProofreadResult(data.correctedText);
+      setProofreadSummary(data.summary);
+
+      const parsedDetails = parseProofreadDetails(data.details);
+      setProofreadDetails(parsedDetails);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          setErrorMessage("校正がキャンセルされました");
+        } else {
+          setErrorMessage(error.message);
+        }
+      } else {
+        setErrorMessage("予期しないエラーが発生しました");
+      }
+    } finally {
+      setLoading(false);
+      setAbortController(null);
+    }
   };
 
   const handleApply = () => {
@@ -79,25 +116,13 @@ export default function Home() {
   };
 
   const handleShowDetails = () => {
-    // パース関数のテストを兼ねて、実際にパースを実行
-    const rawDetails = `
-  修正内容:
-  助詞「は」を「が」に修正しました。
-  文末の敬語表現を統一しました。
+    if (!proofreadDetails) {
+      setErrorMessage("校正詳細情報がありません。まず文章を校正してください。");
 
-  改善点:
-  より自然な日本語表現に変更しました。
-  読みやすさを向上させるため、文章構造を調整しました。
+      return;
+    }
 
-  注意点:
-  ビジネス文書として適切な敬語レベルを維持してください。
-  専門用語の使用は読者層を考慮してください。
-    `;
-
-    const parsedDetails = parseProofreadDetails(rawDetails);
-    setProofreadDetails(parsedDetails);
     setIsReasonOpen(true);
-    // TODO 後ほど実装
   };
 
   const handleCloseReason = () => {
@@ -137,7 +162,7 @@ export default function Home() {
             onChange={setInputText}
             charCount={inputLength}
             maxChars={maxChars}
-            onSubmit={handleCorrect}
+            onSubmit={() => void handleCorrect()}
             disabled={loading}
             validationState={validationState}
             className="lg:col-span-2"
@@ -148,7 +173,7 @@ export default function Home() {
             canCorrect={validationState === "ok"}
             errorMessage={errorMessage}
             isCancelable={!!abortController}
-            onCorrect={handleCorrect}
+            onCorrect={() => void handleCorrect()}
             onApply={handleApply}
             onCancel={handleCancel}
             className="lg:col-span-1 lg:self-stretch"
