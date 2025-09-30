@@ -6,12 +6,18 @@ import type { ProofreadDetails } from "@/types/proofread";
  */
 export function parseProofreadDetails(detailsText: string): ProofreadDetails {
   const sectionPatterns = {
-    corrections:
-      /(?:修正内容|修正|corrections?|変更点)[:：]?\s*(.*?)(?=(?:改善点|improvements?|注意点|notes?|$))/is,
-    improvements:
-      /(?:改善点|改善|improvements?)[:：]?\s*(.*?)(?=(?:注意点|notes?|修正内容|corrections?|$))/is,
-    notes:
-      /(?:注意点|注意|notes?)[:：]?\s*(.*?)(?=(?:修正内容|corrections?|改善点|improvements?|$))/is,
+    corrections: new RegExp(
+      String.raw`(?:^|\n)\s*(?:修正内容|修正|corrections?|変更点)[:：]?\s*(.*?)(?=(?:\n\s*(?:改善点|improvements?|注意点|notes?)[:：]?\s*|$))`,
+      "is"
+    ),
+    improvements: new RegExp(
+      String.raw`(?:^|\n)\s*(?:改善点|改善|improvements?)[:：]?\s*(.*?)(?=(?:\n\s*(?:注意点|notes?|修正内容|corrections?)[:：]?\s*|$))`,
+      "is"
+    ),
+    notes: new RegExp(
+      String.raw`(?:^|\n)\s*(?:注意点|注意|notes?)[:：]?\s*(.*?)(?=(?:\n\s*(?:修正内容|corrections?|改善点|improvements?)[:：]?\s*|$))`,
+      "is"
+    ),
   };
 
   try {
