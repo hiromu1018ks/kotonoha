@@ -30,6 +30,7 @@ export default function Home() {
   const [proofreadSummary, setProofreadSummary] = useState("");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const [abortController, setAbortController] =
     useState<AbortController | null>(null);
   const [proofreadDetails, setProofreadDetails] =
@@ -144,7 +145,9 @@ export default function Home() {
     navigator.clipboard
       .writeText(proofreadResult)
       .then(() => {
-        console.log("校正結果をクリップボードにコピーしました");
+        setSuccessMessage("クリップボードにコピーしました!");
+
+        setTimeout(() => setSuccessMessage(""), 3000);
       })
       .catch((err) => {
         console.error("コピーに失敗しました:", err);
@@ -172,6 +175,7 @@ export default function Home() {
             hasResult={hasResult}
             canCorrect={validationState === "ok"}
             errorMessage={errorMessage}
+            successMessage={successMessage}
             isCancelable={!!abortController}
             onCorrect={() => void handleCorrect()}
             onApply={handleApply}
