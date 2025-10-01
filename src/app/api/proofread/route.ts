@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateProofread } from "@/lib/gemini.ts";
+import { generateProofread } from "@/lib/gemini/index.ts";
 import { proofreadRequestSchema } from "@/lib/validation/proofread.ts";
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN ?? "";

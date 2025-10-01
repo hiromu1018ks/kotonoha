@@ -1,31 +1,9 @@
-import { GoogleGenAI } from "@google/genai";
-import {
-  type BuildPromptOptions,
-  buildProofreadPrompt,
-} from "@/lib/prompts.ts";
-import { normalizeProofreadResponse } from "@/lib/response-normalizer.ts";
+import { normalizeProofreadResponse } from "../response-normalizer.ts";
+import { GEMINI_MODEL_ID, GEMINI_TIMEOUT_MS, getClient } from "./client.ts";
+import type { BuildPromptOptions } from "./prompt.ts";
+import { buildProofreadPrompt } from "./prompt.ts";
 
-const MODEL_ID = process.env.GEMINI_MODEL ?? "gemini-2.0-flash-lite";
-const TIMEOUT_MS = Number(process.env.TIMEOUT_MS) || 60000;
 const DEBUG_GEMINI_LOGS = process.env.DEBUG_GEMINI_LOGS === "true";
-
-let client: GoogleGenAI | null = null;
-
-function getClient() {
-  if (client) {
-    return client;
-  }
-
-  const apiKey = process.env.GEMINI_API_KEY;
-
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY が設定されていません。");
-  }
-
-  client = new GoogleGenAI({ apiKey });
-
-  return client;
-}
 
 export async function generateProofread(options: BuildPromptOptions) {
   const ai = getClient();
@@ -38,10 +16,10 @@ export async function generateProofread(options: BuildPromptOptions) {
   try {
     const response = await withTimeout(
       ai.models.generateContent({
-        model: MODEL_ID,
+        model: GEMINI_MODEL_ID,
         contents: [{ role: "user", parts: [{ text: prompt }] }],
       }),
-      TIMEOUT_MS
+      GEMINI_TIMEOUT_MS
     );
 
     if (DEBUG_GEMINI_LOGS) {
@@ -85,3 +63,5 @@ async function withTimeout<T>(
     }
   }
 }
+
+export type { BuildPromptOptions };

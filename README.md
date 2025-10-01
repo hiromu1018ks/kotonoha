@@ -73,7 +73,7 @@ pnpm build        # 本番ビルド検証
 
 ## デプロイ
 
-- Vercel などにデプロイする際は、Production/Preview 環境に上記の環境変数を設定してください。
+- Vercel などにデプロイする際は、Production/Preview 環境に上記の環境変数を設定してください
 - 本番では `DEBUG_GEMINI_LOGS` を設定しない（または `false`）ことで、校正対象テキストがログに残るのを防げます。
 - CORS を制限したい場合は `ALLOWED_ORIGIN` にデプロイ先のドメイン（例: `https://your-app.vercel.app`）を指定してください。
 
