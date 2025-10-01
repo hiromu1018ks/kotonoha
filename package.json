@@ -9,7 +9,9 @@
     "fix": "pnpm run format && pnpm run lint:fix",
     "format": "prettier --write --log-level=warn '**/!(*.min|*-lock).{js,mjs,cjs,ts,mts,cts,jsx,tsx,html,css,scss,sass,less,json,jsonc,yaml,yml,graphql,gql,md,mdx}'",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test": "vitest --run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@google/genai": "^1.21.0",
@@ -45,6 +47,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-c8": "^0.33.0",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
@@ -56,6 +59,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
+    "eslint-plugin-vitest": "^0.5.4",
     "globals": "^16.4.0",
     "msw": "^2.11.3",
     "prettier": "^3.6.2",
@@ -64,6 +68,7 @@
     "tw-animate-css": "^1.3.5",
     "typescript": "^5",
     "typescript-eslint": "^8.38.0",
-    "typesync": "^0.14.3"
+    "typesync": "^0.14.3",
+    "vitest": "^3.2.4"
   }
 }

@@ -7,6 +7,7 @@ import { normalizeProofreadResponse } from "@/lib/response-normalizer.ts";
 
 const MODEL_ID = process.env.GEMINI_MODEL ?? "gemini-2.0-flash-lite";
 const TIMEOUT_MS = Number(process.env.TIMEOUT_MS) || 60000;
+const DEBUG_GEMINI_LOGS = process.env.DEBUG_GEMINI_LOGS === "true";
 
 let client: GoogleGenAI | null = null;
 
@@ -30,7 +31,9 @@ export async function generateProofread(options: BuildPromptOptions) {
   const ai = getClient();
   const prompt = buildProofreadPrompt(options);
 
-  console.time("generateProofread:generateContent"); // 呼び出し時間を計測して遅延の発生箇所を把握する
+  if (DEBUG_GEMINI_LOGS) {
+    console.time("generateProofread:generateContent"); // 呼び出し時間を計測して遅延の発生箇所を把握する
+  }
 
   try {
     const response = await withTimeout(
@@ -41,17 +44,20 @@ export async function generateProofread(options: BuildPromptOptions) {
       TIMEOUT_MS
     );
 
-    console.timeEnd("generateProofread:generateContent");
+    if (DEBUG_GEMINI_LOGS) {
+      console.timeEnd("generateProofread:generateContent");
 
-    console.log(
-      "Gemini raw response:",
-      JSON.stringify(response, null, 2) // 正規化前のレスポンスをまるごと確認する
-    );
+      console.log(
+        "Gemini raw response:",
+        JSON.stringify(response, null, 2) // 正規化前のレスポンスをまるごと確認する
+      );
+    }
 
     return normalizeProofreadResponse(response);
   } catch (error) {
-    console.timeEnd("generateProofread:generateContent"); // エラー時も計測を終了しておく
-    console.error("Gemini generateContent error:", error); // 例外内容を詳細に確認する
+    if (DEBUG_GEMINI_LOGS) {
+      console.error("Gemini generateContent error:", error); // 例外内容を詳細に確認する
+    }
 
     throw error; // 既存のエラーハンドリングに任せるため再スローする
   }

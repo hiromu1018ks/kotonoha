@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { generateProofread } from "@/lib/gemini.ts";
 import { proofreadRequestSchema } from "@/lib/validation/proofread.ts";
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN ?? "";
+
 export async function POST(req: Request) {
   try {
     const json: unknown = await req.json();
@@ -37,10 +39,13 @@ export async function POST(req: Request) {
 export function OPTIONS() {
   return NextResponse.json(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
+    headers:
+      ALLOWED_ORIGIN.length > 0
+        ? {
+            "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          }
+        : {},
   });
 }

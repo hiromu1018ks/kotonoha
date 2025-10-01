@@ -11,7 +11,6 @@ const MAX_DETAILS_LENGTH = 4_000; // 詳細は 4000 文字までに制限する
 
 export interface NormalizedProofreadResult extends ProofreadResponse {
   warnings: string[];
-  rawText: string;
 }
 
 export function normalizeProofreadResponse(
@@ -31,7 +30,6 @@ export function normalizeProofreadResponse(
   return {
     ...sanitized,
     warnings,
-    rawText,
   };
 }
 

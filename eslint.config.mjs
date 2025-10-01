@@ -8,7 +8,7 @@ import pluginJsxA11y from "eslint-plugin-jsx-a11y";
 import pluginImport from "eslint-plugin-import";
 import pluginSimpleImportSort from "eslint-plugin-simple-import-sort";
 import pluginUnusedImports from "eslint-plugin-unused-imports";
-import pluginJest from "eslint-plugin-jest";
+import vitest from "eslint-plugin-vitest";
 import pluginStylistic from "@stylistic/eslint-plugin";
 import pluginNext from "@next/eslint-plugin-next";
 import configPrettier from "eslint-config-prettier";
@@ -156,7 +156,7 @@ const stylisticConfig = {
 
 const testConfig = {
   name: "Test Config",
-  ...pluginJest.configs["flat/recommended"],
+  ...vitest.configs["recommended"],
   files: [
     "{src,app,pages}/**/*.{test,spec}.{js,ts,jsxt,sx}",
     "{src,app,pages}/**/__tests__/**/*.{ts,js,jsx,tsx}",
