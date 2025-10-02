@@ -23,26 +23,28 @@ export default function EditorPanel({
 }: EditorPanelProps) {
   return (
     <div
-      className={`bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col min-h-[260px] lg:min-h-0 ${className}`}
+      className={`glass-effect rounded-2xl card-shadow border border-gray-200/50 flex flex-col min-h-[260px] lg:min-h-0 overflow-hidden transition-all duration-300 ${className}`}
     >
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+      <div className="p-4 border-b border-gray-200/50 flex items-center justify-between bg-gradient-to-r from-blue-50/50 to-indigo-50/50">
         <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-          <h2 className="font-semibold text-gray-900">校正前の文章</h2>
+          <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse shadow-sm"></div>
+          <h2 className="font-semibold text-gray-900 tracking-wide">
+            校正前の文章
+          </h2>
         </div>
         <span
           id="inputCharCount"
-          className={`text-sm px-2 py-1 rounded ${
+          className={`text-sm px-3 py-1.5 rounded-lg font-medium transition-all duration-300 ${
             charCount > maxChars
-              ? "bg-red-100 text-red-600 border border-red-200"
-              : "bg-gray-100 text-gray-500"
+              ? "bg-red-100 text-red-600 border border-red-200 shadow-sm"
+              : "bg-white/80 text-gray-600 border border-gray-200/50"
           }`}
           aria-live="polite"
         >
           {charCount}文字
         </span>
       </div>
-      <div className="flex-1 p-4 min-h-[260px] lg:min-h-0">
+      <div className="flex-1 p-5 min-h-[260px] lg:min-h-0 focus-glow">
         <textarea
           id="inputText"
           value={value}
@@ -56,7 +58,7 @@ export default function EditorPanel({
               }
             }
           }}
-          className={`w-full border-0 resize-none focus:outline-none text-gray-900 placeholder-gray-400 leading-relaxed h-64 lg:h-full ${
+          className={`w-full border-0 resize-none focus:outline-none text-gray-900 placeholder-gray-400 leading-loose h-64 lg:h-full bg-transparent ${
             disabled ? "opacity-50 cursor-not-allowed" : ""
           }`}
           placeholder={
@@ -67,18 +69,29 @@ export default function EditorPanel({
           aria-invalid={validationState !== "ok"}
           aria-describedby="inputText-help"
         ></textarea>
-        <p id="inputText-help" aria-live="assertive" className="mt-3 text-sm">
+        <p
+          id="inputText-help"
+          aria-live="assertive"
+          className="mt-3 text-sm font-medium"
+        >
           {validationState === "empty" && (
-            <span className="text-red-600">文章を入力してください</span>
+            <span className="text-red-600 flex items-center space-x-1">
+              <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+              <span>文章を入力してください</span>
+            </span>
           )}
           {validationState === "limit" && (
-            <span className="text-red-600">
-              {maxChars}文字以内で入力してください（現在 {charCount} 文字）
+            <span className="text-red-600 flex items-center space-x-1">
+              <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+              <span>
+                {maxChars}文字以内で入力してください（現在 {charCount} 文字）
+              </span>
             </span>
           )}
           {validationState === "ok" && (
-            <span className="text-slate-500">
-              Ctrl/Cmd+Enter で校正を実行できます
+            <span className="text-slate-500 flex items-center space-x-1">
+              <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+              <span>Ctrl/Cmd+Enter で校正を実行できます</span>
             </span>
           )}
         </p>

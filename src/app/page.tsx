@@ -38,8 +38,8 @@ export default function Home() {
   return (
     <>
       <Header onOpenSettings={openSettings} />
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 lg:grid-cols-5 lg:h-[calc(100vh-200px)]">
+      <main className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
+        <div className="grid gap-6 lg:gap-8 lg:grid-cols-5 lg:h-[calc(100vh-200px)] animate-fade-in">
           <EditorPanel
             value={inputText}
             onChange={setInputText}
