@@ -16,8 +16,6 @@ export default function Home() {
     proofreadSummary,
     proofreadDetails,
     loading,
-    errorMessage,
-    successMessage,
     isSettingsOpen,
     isReasonOpen,
     validationState,
@@ -54,8 +52,6 @@ export default function Home() {
             loading={loading}
             hasResult={hasResult}
             canCorrect={validationState === "ok"}
-            errorMessage={errorMessage}
-            successMessage={successMessage}
             isCancelable={Boolean(cancelProofread)}
             onCorrect={() => void runProofread()}
             onApply={applyResult}

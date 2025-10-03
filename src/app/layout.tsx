@@ -2,6 +2,7 @@
 
 import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_JP } from "next/font/google";
+import NotificationLayer from "./components/NotificationLayer.tsx";
 
 import "./globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({
     >
       <body className="bg-slate-950 text-slate-50 font-sans antialiased">
         {children}
+        <NotificationLayer />
       </body>
     </html>
   );

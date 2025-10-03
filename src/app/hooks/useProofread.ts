@@ -1,5 +1,10 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { parseProofreadDetails } from "@/lib/format/proofread.ts";
+import {
+  notifyError,
+  notifyInfo,
+  notifySuccess,
+} from "@/lib/notifications/store.ts";
 import { useSettingsStore } from "@/lib/settings/store.ts";
 import { proofreadResponseSchema } from "@/lib/validation/proofread.ts";
 import type { ProofreadDetails } from "@/types/proofread";
@@ -13,12 +18,12 @@ export function useProofread() {
   const [proofreadDetails, setProofreadDetails] =
     useState<ProofreadDetails | null>(null);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [abortController, setAbortController] =
-    useState<AbortController | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isReasonOpen, setIsReasonOpen] = useState(false);
+
+  const cancelledRequestIds = useRef(new Set<string>());
+  const controllerToRequestId = useRef(new Map<AbortController, string>());
+  const abortController = useRef<AbortController | null>(null);
 
   const validationState = useMemo<"ok" | "empty" | "limit">(() => {
     if (inputText.trim().length === 0) return "empty";
@@ -52,7 +57,7 @@ export function useProofread() {
   // 校正詳細を表示するハンドラー。詳細が無い場合はエラーメッセージを表示
   const showDetails = useCallback(() => {
     if (!proofreadDetails) {
-      setErrorMessage("校正詳細情報がありません。まず文章を校正してください。");
+      notifyError("校正詳細情報がありません。まず文章を校正してください。");
 
       return;
     }
@@ -62,13 +67,22 @@ export function useProofread() {
 
   // 校正処理のキャンセル
   const cancelProofread = useCallback(() => {
-    if (!abortController) return;
+    const controller = abortController.current;
 
-    abortController.abort();
+    if (!controller) return;
+
+    const requestId = controllerToRequestId.current.get(controller);
+
+    if (requestId) {
+      cancelledRequestIds.current.add(requestId);
+      controllerToRequestId.current.delete(controller);
+    }
+
+    controller.abort();
     setLoading(false);
-    setAbortController(null);
-    setErrorMessage("校正がキャンセルされました");
-  }, [abortController]);
+    abortController.current = null;
+    notifyInfo("校正がキャンセルされました");
+  }, []);
 
   // 校正結果をクリップボードへコピー
   const copyResult = useCallback(() => {
@@ -77,12 +91,11 @@ export function useProofread() {
     navigator.clipboard
       .writeText(proofreadResult)
       .then(() => {
-        setSuccessMessage("クリップボードにコピーしました!");
-        setTimeout(() => setSuccessMessage(""), 3_000); // 3秒後にメッセージをリセット
+        notifySuccess("クリップボードにコピーしました!");
       })
       .catch((err) => {
         console.error("コピーに失敗しました:", err);
-        setErrorMessage("クリップボードへのコピーに失敗しました");
+        notifyError("クリップボードへのコピーに失敗しました");
       });
   }, [proofreadResult]);
 
@@ -90,13 +103,21 @@ export function useProofread() {
   const runProofread = useCallback(async () => {
     if (validationState !== "ok") return; // 入力が不正なら何もしない
 
-    setErrorMessage("");
+    const requestId =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+
     setProofreadResult("");
     setProofreadSummary("");
     setProofreadDetails(null);
 
     const controller = new AbortController();
-    setAbortController(controller);
+
+    controllerToRequestId.current.set(controller, requestId);
+
+    abortController.current = controller;
+
     setLoading(true);
 
     try {
@@ -132,16 +153,25 @@ export function useProofread() {
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === "AbortError") {
-          setErrorMessage("校正がキャンセルされました");
+          if (cancelledRequestIds.current.has(requestId)) {
+            cancelledRequestIds.current.delete(requestId);
+          } else {
+            notifyError("校正がキャンセルされました");
+          }
         } else {
-          setErrorMessage(error.message);
+          notifyError(error.message);
         }
       } else {
-        setErrorMessage("予期しないエラーが発生しました");
+        notifyError("予期しないエラーが発生しました");
       }
     } finally {
       setLoading(false);
-      setAbortController(null);
+
+      if (abortController.current === controller) {
+        abortController.current = null;
+      }
+
+      controllerToRequestId.current.delete(controller);
     }
   }, [inputText, validationState]);
 
@@ -152,11 +182,8 @@ export function useProofread() {
     proofreadSummary,
     proofreadDetails,
     loading,
-    errorMessage,
-    successMessage,
     isSettingsOpen,
     isReasonOpen,
-    abortController,
     validationState,
     inputLength,
     resultCharCount,

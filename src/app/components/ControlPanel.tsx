@@ -7,8 +7,6 @@ interface ControlPanelProps {
   loading: boolean;
   hasResult: boolean;
   canCorrect: boolean;
-  errorMessage?: string;
-  successMessage?: string;
   isCancelable?: boolean;
   onCorrect: () => void;
   onApply: () => void;
@@ -20,8 +18,6 @@ export default function ControlPanel({
   loading,
   hasResult,
   canCorrect,
-  errorMessage,
-  successMessage,
   isCancelable = false,
   onCorrect,
   onApply,
@@ -103,49 +99,6 @@ export default function ControlPanel({
         <Download className="w-5 h-5 relative z-10" />
         <span className="relative z-10">校正結果を適用</span>
       </button>
-
-      <AnimatePresence>
-        {errorMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="w-full p-3.5 bg-red-50/90 border border-red-200 rounded-xl shadow-sm backdrop-blur-sm"
-            role="alert"
-            aria-live="assertive"
-          >
-            <p className="text-sm text-red-700 text-center font-medium">
-              {errorMessage}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {successMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="w-full p-3.5 bg-green-50/90 border border-green-200 rounded-xl shadow-sm backdrop-blur-sm"
-            role="status"
-            aria-live="polite"
-          >
-            <p className="text-sm text-green-700 text-center flex items-center justify-center space-x-2 font-medium">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>{successMessage}</span>
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
